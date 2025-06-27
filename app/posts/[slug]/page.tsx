@@ -85,8 +85,8 @@ export default async function Page({
   });
   const category = await getCategoryById(post.categories[0]);
   const [recentPosts, relatedPosts] = await Promise.all([
-    getRecentPosts(3),
-    getRelatedPosts(post.id, category.id, 3),
+    getRecentPosts(5),
+    getRelatedPosts(post.id, category.id, 5),
   ]);
 
   return (
@@ -132,23 +132,48 @@ export default async function Page({
           )}
         </Prose>
 
-        <Article dangerouslySetInnerHTML={{ __html: post.content.rendered }} />
-
-        <div className="grid md:grid-cols-2 gap-8 mt-12">
-          <div className="space-y-4">
-            <h3 className="text-xl font-semibold">Related Posts</h3>
-            {relatedPosts.map((p) => (
-              <PostCard key={p.id} post={p} />
-            ))}
+        <div className="md:grid md:grid-cols-[3fr_1fr] gap-8">
+          <div>
+            <Article dangerouslySetInnerHTML={{ __html: post.content.rendered }} />
           </div>
-          <div className="space-y-4">
-            <h3 className="text-xl font-semibold">Recent Posts</h3>
-            {recentPosts
-              .filter((p) => p.id !== post.id)
-              .map((p) => (
-                <PostCard key={p.id} post={p} />
-              ))}
-          </div>
+          <aside className="space-y-8 mt-8 md:mt-0">
+            <div className="space-y-2">
+              <h3 className="text-lg font-semibold">Related Posts</h3>
+              <ul className="list-disc pl-4 text-sm space-y-1">
+                {relatedPosts.map((p) => (
+                  <li key={p.id}>
+                    <Link href={`/posts/${p.slug}`} className="hover:underline">
+                      {/* eslint-disable-next-line react/no-danger */}
+                      <span
+                        dangerouslySetInnerHTML={{
+                          __html: p.title.rendered,
+                        }}
+                      />
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <div className="space-y-2">
+              <h3 className="text-lg font-semibold">Recent Posts</h3>
+              <ul className="list-disc pl-4 text-sm space-y-1">
+                {recentPosts
+                  .filter((p) => p.id !== post.id)
+                  .map((p) => (
+                    <li key={p.id}>
+                      <Link href={`/posts/${p.slug}`} className="hover:underline">
+                        {/* eslint-disable-next-line react/no-danger */}
+                        <span
+                          dangerouslySetInnerHTML={{
+                            __html: p.title.rendered,
+                          }}
+                        />
+                      </Link>
+                    </li>
+                  ))}
+              </ul>
+            </div>
+          </aside>
         </div>
       </Container>
     </Section>
