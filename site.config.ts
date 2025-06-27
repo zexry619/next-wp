@@ -4,6 +4,9 @@ type SiteConfig = {
   site_description: string;
 };
 
+// Jumlah maksimal slug yang dirender secara statik
+export const MAX_STATIC_SLUGS = 100;
+
 export const siteConfig: SiteConfig = {
   site_name: "next-wp",
   site_description: "Blog berita, tutorial, dan panduan berbasis WordPress",
