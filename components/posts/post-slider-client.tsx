@@ -44,22 +44,20 @@ export function PostSliderClient({ posts }: { posts: SliderItem[] }) {
           </div>
         ))}
       </div>
-      <div className="absolute -left-2 top-1/2 -translate-y-1/2 flex gap-2">
-        <button
-          aria-label="Sebelumnya"
-          className="p-1 rounded-full border bg-background"
-          onClick={() => instanceRef.current?.prev()}
-        >
-          «
-        </button>
-        <button
-          aria-label="Berikutnya"
-          className="p-1 rounded-full border bg-background"
-          onClick={() => instanceRef.current?.next()}
-        >
-          »
-        </button>
-      </div>
+      <button
+        aria-label="Sebelumnya"
+        className="absolute left-1 top-1/2 -translate-y-1/2 flex items-center justify-center w-8 h-8 rounded-full border bg-background/90 hover:bg-accent transition-colors"
+        onClick={() => instanceRef.current?.prev()}
+      >
+        «
+      </button>
+      <button
+        aria-label="Berikutnya"
+        className="absolute right-1 top-1/2 -translate-y-1/2 flex items-center justify-center w-8 h-8 rounded-full border bg-background/90 hover:bg-accent transition-colors"
+        onClick={() => instanceRef.current?.next()}
+      >
+        »
+      </button>
     </div>
   )
 }

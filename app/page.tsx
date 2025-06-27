@@ -29,8 +29,8 @@ export default async function Home() {
             <div className="grid md:grid-cols-[2fr_1fr] gap-6">
               <HeroPost post={hero} />
               <div className="space-y-2">
-                <h3 className="text-lg font-semibold">Terbaru</h3>
-                <ul className="space-y-2">
+                <h3 className="text-lg font-semibold pb-2 border-b">Terbaru</h3>
+                <ul className="space-y-2 pt-2">
                   {sidePosts.map((post) => (
                     <SidebarPost key={post.id} post={post} />
                   ))}
