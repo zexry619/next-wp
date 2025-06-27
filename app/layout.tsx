@@ -89,17 +89,19 @@ async function Nav({ className, children, id }: NavProps) {
         {children}
         <div className="flex items-center gap-2">
           <div className="mx-2 hidden md:flex items-center gap-2">
-            {Object.entries(mainMenu).map(([key, href]) => (
-              <Button key={href} asChild variant="ghost" size="sm">
-                <Link href={href}>
-                  {key.charAt(0).toUpperCase() + key.slice(1)}
-                </Link>
-              </Button>
-            ))}
+            {Object.entries(mainMenu)
+              .filter(([key]) => key !== "blog")
+              .map(([key, href]) => (
+                <Button key={href} asChild variant="ghost" size="sm">
+                  <Link href={href}>
+                    {key.charAt(0).toUpperCase() + key.slice(1)}
+                  </Link>
+                </Button>
+              ))}
             <CategoryDropdown />
           </div>
           <Button asChild className="hidden sm:flex">
-            <Link href="https://github.com/9d8dev/next-wp">Get Started</Link>
+            <Link href="/posts">Blog</Link>
           </Button>
           <MobileNav categories={categories} />
         </div>

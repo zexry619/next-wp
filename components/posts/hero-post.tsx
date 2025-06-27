@@ -19,7 +19,7 @@ export async function HeroPost({ post }: { post: Post }) {
 
   return (
     <Link href={`/posts/${post.slug}`} className="block group">
-      <div className="h-64 md:h-96 w-full overflow-hidden relative rounded-lg border flex items-center justify-center bg-muted mb-4">
+      <div className="h-64 md:h-96 w-full overflow-hidden relative rounded-lg border bg-muted">
         {media?.source_url ? (
           <Image
             src={media.source_url}
@@ -28,15 +28,20 @@ export async function HeroPost({ post }: { post: Post }) {
             className="object-cover group-hover:scale-105 transition-transform"
           />
         ) : (
-          <div className="text-muted-foreground">No image available</div>
+          <div className="flex items-center justify-center w-full h-full text-muted-foreground">
+            No image available
+          </div>
         )}
-      </div>
-      <h2
-        className="text-2xl font-semibold group-hover:underline"
-        dangerouslySetInnerHTML={{ __html: post.title.rendered }}
-      />
-      <div className="text-sm text-muted-foreground mt-1">
-        {category?.name} &bull; {date}
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-black/40 to-black/70" />
+        <div className="absolute bottom-0 left-0 p-4 text-white">
+          <span className="text-xs md:text-sm">
+            {category?.name} &bull; {date}
+          </span>
+          <h2
+            className="text-xl md:text-2xl font-semibold mt-1 group-hover:underline"
+            dangerouslySetInnerHTML={{ __html: post.title.rendered }}
+          />
+        </div>
       </div>
     </Link>
   );
