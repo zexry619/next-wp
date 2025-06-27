@@ -4,6 +4,7 @@ import {
   getAuthorById,
   getCategoryById,
   getAllPostSlugs,
+  WordPressAPIError,
 } from "@/lib/wordpress";
 
 import { Section, Container, Article, Prose } from "@/components/craft";
@@ -19,7 +20,15 @@ import type { Metadata } from "next";
 export const dynamicParams = true;
 
 export async function generateStaticParams() {
-  return await getAllPostSlugs();
+  try {
+    return await getAllPostSlugs();
+  } catch (error) {
+    if (error instanceof WordPressAPIError) {
+      console.warn("Failed to fetch post slugs", error);
+      return [];
+    }
+    throw error;
+  }
 }
 
 export async function generateMetadata({
@@ -28,11 +37,12 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
-  const post = await getPostBySlug(slug);
+  try {
+    const post = await getPostBySlug(slug);
 
-  if (!post) {
-    return {};
-  }
+    if (!post) {
+      return {};
+    }
 
   const ogUrl = new URL(`${siteConfig.site_domain}/api/og`);
   ogUrl.searchParams.append("title", post.title.rendered);
@@ -64,6 +74,13 @@ export async function generateMetadata({
       images: [ogUrl.toString()],
     },
   };
+  } catch (error) {
+    if (error instanceof WordPressAPIError) {
+      console.warn(`Failed to fetch metadata for post ${slug}`, error);
+      return {};
+    }
+    throw error;
+  }
 }
 
 export default async function Page({
@@ -72,63 +89,94 @@ export default async function Page({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const post = await getPostBySlug(slug);
-  const featuredMedia = post.featured_media
-    ? await getFeaturedMediaById(post.featured_media)
-    : null;
-  const author = await getAuthorById(post.author);
-  const date = new Date(post.date).toLocaleDateString("en-US", {
-    month: "long",
-    day: "numeric",
-    year: "numeric",
-  });
-  const category = await getCategoryById(post.categories[0]);
+  try {
+    const post = await getPostBySlug(slug);
 
-  return (
-    <Section>
-      <Container>
-        <Prose>
-          <h1>
-            <Balancer>
-              <span
-                dangerouslySetInnerHTML={{ __html: post.title.rendered }}
-              ></span>
-            </Balancer>
-          </h1>
-          <div className="flex justify-between items-center gap-4 text-sm mb-4">
-            <h5>
-              Published {date} by{" "}
-              {author.name && (
-                <span>
-                  <a href={`/posts/?author=${author.id}`}>{author.name}</a>{" "}
-                </span>
-              )}
-            </h5>
+    if (!post) {
+      return (
+        <Section>
+          <Container>
+            <Prose>
+              <h1>Postingan tidak ditemukan</h1>
+              <p>Data postingan gagal diambil.</p>
+            </Prose>
+          </Container>
+        </Section>
+      );
+    }
 
-            <Link
-              href={`/posts/?category=${category.id}`}
-              className={cn(
-                badgeVariants({ variant: "outline" }),
-                "!no-underline"
-              )}
-            >
-              {category.name}
-            </Link>
-          </div>
-          {featuredMedia?.source_url && (
-            <div className="h-96 my-12 md:h-[500px] overflow-hidden flex items-center justify-center border rounded-lg bg-accent/25">
-              {/* eslint-disable-next-line */}
-              <img
-                className="w-full h-full object-cover"
-                src={featuredMedia.source_url}
-                alt={post.title.rendered}
-              />
+    const featuredMedia = post.featured_media
+      ? await getFeaturedMediaById(post.featured_media)
+      : null;
+    const author = await getAuthorById(post.author);
+    const date = new Date(post.date).toLocaleDateString("en-US", {
+      month: "long",
+      day: "numeric",
+      year: "numeric",
+    });
+    const category = await getCategoryById(post.categories[0]);
+
+    return (
+      <Section>
+        <Container>
+          <Prose>
+            <h1>
+              <Balancer>
+                <span
+                  dangerouslySetInnerHTML={{ __html: post.title.rendered }}
+                ></span>
+              </Balancer>
+            </h1>
+            <div className="flex justify-between items-center gap-4 text-sm mb-4">
+              <h5>
+                Published {date} by{" "}
+                {author.name && (
+                  <span>
+                    <a href={`/posts/?author=${author.id}`}>{author.name}</a>{" "}
+                  </span>
+                )}
+              </h5>
+
+              <Link
+                href={`/posts/?category=${category.id}`}
+                className={cn(
+                  badgeVariants({ variant: "outline" }),
+                  "!no-underline"
+                )}
+              >
+                {category.name}
+              </Link>
             </div>
-          )}
-        </Prose>
+            {featuredMedia?.source_url && (
+              <div className="h-96 my-12 md:h-[500px] overflow-hidden flex items-center justify-center border rounded-lg bg-accent/25">
+                {/* eslint-disable-next-line */}
+                <img
+                  className="w-full h-full object-cover"
+                  src={featuredMedia.source_url}
+                  alt={post.title.rendered}
+                />
+              </div>
+            )}
+          </Prose>
 
-        <Article dangerouslySetInnerHTML={{ __html: post.content.rendered }} />
-      </Container>
-    </Section>
-  );
+          <Article dangerouslySetInnerHTML={{ __html: post.content.rendered }} />
+        </Container>
+      </Section>
+    );
+  } catch (error) {
+    if (error instanceof WordPressAPIError) {
+      console.warn(`Failed to fetch post ${slug}`, error);
+      return (
+        <Section>
+          <Container>
+            <Prose>
+              <h1>Postingan tidak tersedia</h1>
+              <p>Data postingan gagal diambil.</p>
+            </Prose>
+          </Container>
+        </Section>
+      );
+    }
+    throw error;
+  }
 }
