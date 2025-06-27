@@ -61,6 +61,7 @@ This is a starter template for building a Next.js application that fetches data 
 - `components/posts/search-input.tsx` -> Search component for Posts
 - `menu.config.ts` -> Site nav menu configuration for desktop and mobile
 - `site.config.ts` -> Configuration for `sitemap.ts` and more
+- `MAX_STATIC_SLUGS` -> Batas jumlah slug yang di-render statik dalam `getAllPostSlugs`
 - `app/sitemap.ts` -> Dynamically generated sitemap
 
 The following environment variables are required in your `.env.local` file:
