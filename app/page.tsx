@@ -4,6 +4,7 @@ import Balancer from "react-wrap-balancer";
 import { PostCard } from "@/components/posts/post-card";
 import { HeroPost } from "@/components/posts/hero-post";
 import { SidebarPost } from "@/components/posts/sidebar-post";
+import { LatestTicker } from "@/components/posts/latest-ticker";
 import { getPostsPaginated } from "@/lib/wordpress";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
@@ -14,14 +15,16 @@ export default async function Home() {
   const sidePosts = rest.slice(0, 3);
   const gridPosts = rest.slice(3);
   return (
-    <Section>
-      <Container>
-        <div className="space-y-8">
-          <div className="grid md:grid-cols-[2fr_1fr] gap-6">
-            <HeroPost post={hero} />
-            <div className="space-y-2">
-              <h3 className="text-lg font-semibold">Terbaru</h3>
-              <ul className="space-y-2">
+    <>
+      <LatestTicker />
+      <Section>
+        <Container>
+          <div className="space-y-8">
+            <div className="grid md:grid-cols-[2fr_1fr] gap-6">
+              <HeroPost post={hero} />
+              <div className="space-y-2">
+                <h3 className="text-lg font-semibold">Terbaru</h3>
+                <ul className="space-y-2">
                 {sidePosts.map((post) => (
                   <SidebarPost key={post.id} post={post} />
                 ))}
@@ -42,10 +45,11 @@ export default async function Home() {
             <Button asChild>
               <Link href="/posts">Lihat Semua</Link>
             </Button>
+            </div>
           </div>
-        </div>
-      </Container>
-    </Section>
+        </Container>
+      </Section>
+    </>
   );
 }
 

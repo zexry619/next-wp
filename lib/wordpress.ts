@@ -44,7 +44,8 @@ async function wordpressFetch<T>(
   const url = `${baseUrl}${path}${
     query ? `?${querystring.stringify(query)}` : ""
   }`;
-  const userAgent = "Next.js WordPress Client";
+  const userAgent =
+    "Mozilla/5.0 (iPad; CPU OS 8_4_1 like Mac OS X) AppleWebKit/600.1.4 (KHTML, like Gecko) Version/8.0 Mobile/12H321 Safari/600.1.4";
 
   const response = await fetch(url, {
     headers: {
@@ -75,7 +76,8 @@ async function wordpressFetchWithPagination<T>(
   const url = `${baseUrl}${path}${
     query ? `?${querystring.stringify(query)}` : ""
   }`;
-  const userAgent = "Next.js WordPress Client";
+  const userAgent =
+    "Mozilla/5.0 (iPad; CPU OS 8_4_1 like Mac OS X) AppleWebKit/600.1.4 (KHTML, like Gecko) Version/8.0 Mobile/12H321 Safari/600.1.4";
 
   const response = await fetch(url, {
     headers: {
@@ -149,7 +151,8 @@ export async function getPostsPaginated(
   const url = `${baseUrl}/wp-json/wp/v2/posts${
     query ? `?${querystring.stringify(query)}` : ""
   }`;
-  const userAgent = "Next.js WordPress Client";
+  const userAgent =
+    "Mozilla/5.0 (iPad; CPU OS 8_4_1 like Mac OS X) AppleWebKit/600.1.4 (KHTML, like Gecko) Version/8.0 Mobile/12H321 Safari/600.1.4";
 
   const response = await fetch(url, {
     headers: {
