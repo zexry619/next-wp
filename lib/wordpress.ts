@@ -11,6 +11,7 @@ import type {
   Author,
   FeaturedMedia,
 } from "./wordpress.d";
+import { MAX_STATIC_SLUGS } from "@/site.config";
 
 const baseUrl = process.env.WORDPRESS_URL;
 
@@ -354,7 +355,7 @@ export async function getAllPostSlugs(): Promise<{ slug: string }[]> {
   let page = 1;
   let hasMore = true;
 
-  while (hasMore) {
+  while (hasMore && allSlugs.length < MAX_STATIC_SLUGS) {
     const response = await wordpressFetchWithPagination<Post[]>(
       "/wp-json/wp/v2/posts",
       {
@@ -366,6 +367,11 @@ export async function getAllPostSlugs(): Promise<{ slug: string }[]> {
 
     const posts = response.data;
     allSlugs.push(...posts.map((post) => ({ slug: post.slug })));
+
+    if (allSlugs.length >= MAX_STATIC_SLUGS) {
+      allSlugs.splice(MAX_STATIC_SLUGS);
+      break;
+    }
 
     hasMore = page < response.headers.totalPages;
     page++;
