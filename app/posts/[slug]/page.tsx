@@ -4,9 +4,12 @@ import {
   getAuthorById,
   getCategoryById,
   getAllPostSlugs,
+  getRecentPosts,
+  getRelatedPosts,
 } from "@/lib/wordpress";
 
 import { Section, Container, Article, Prose } from "@/components/craft";
+import { PostCard } from "@/components/posts/post-card";
 import { badgeVariants } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { siteConfig } from "@/site.config";
@@ -81,6 +84,10 @@ export default async function Page({
     year: "numeric",
   });
   const category = await getCategoryById(post.categories[0]);
+  const [recentPosts, relatedPosts] = await Promise.all([
+    getRecentPosts(3),
+    getRelatedPosts(post.id, category.id, 3),
+  ]);
 
   return (
     <Section>
@@ -126,6 +133,23 @@ export default async function Page({
         </Prose>
 
         <Article dangerouslySetInnerHTML={{ __html: post.content.rendered }} />
+
+        <div className="grid md:grid-cols-2 gap-8 mt-12">
+          <div className="space-y-4">
+            <h3 className="text-xl font-semibold">Related Posts</h3>
+            {relatedPosts.map((p) => (
+              <PostCard key={p.id} post={p} />
+            ))}
+          </div>
+          <div className="space-y-4">
+            <h3 className="text-xl font-semibold">Recent Posts</h3>
+            {recentPosts
+              .filter((p) => p.id !== post.id)
+              .map((p) => (
+                <PostCard key={p.id} post={p} />
+              ))}
+          </div>
+        </div>
       </Container>
     </Section>
   );

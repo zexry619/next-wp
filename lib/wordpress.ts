@@ -420,4 +420,18 @@ export async function getPostsByAuthorPaginated(
   return wordpressFetchWithPagination<Post[]>("/wp-json/wp/v2/posts", query);
 }
 
+export async function getRecentPosts(limit: number = 3): Promise<Post[]> {
+  const { data } = await getPostsPaginated(1, limit);
+  return data;
+}
+
+export async function getRelatedPosts(
+  postId: number,
+  categoryId: number,
+  limit: number = 3
+): Promise<Post[]> {
+  const { data } = await getPostsByCategoryPaginated(categoryId, 1, limit + 1);
+  return data.filter((p) => p.id !== postId).slice(0, limit);
+}
+
 export { WordPressAPIError };

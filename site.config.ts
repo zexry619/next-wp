@@ -6,6 +6,6 @@ type SiteConfig = {
 
 export const siteConfig: SiteConfig = {
   site_name: "next-wp",
-  site_description: "Blog berita dan panduan berbasis WordPress",
+  site_description: "Blog berita, tutorial, dan panduan berbasis WordPress",
   site_domain: "https://next-wp.com",
 };
