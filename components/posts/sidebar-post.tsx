@@ -16,7 +16,7 @@ export async function SidebarPost({ post }: { post: Post }) {
     <li className="space-y-1">
       <Link
         href={`/posts/${post.slug}`}
-        className="hover:underline"
+        className="hover:underline line-clamp-2"
         dangerouslySetInnerHTML={{ __html: post.title.rendered }}
       />
       <div className="text-xs text-muted-foreground">

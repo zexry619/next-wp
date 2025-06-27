@@ -15,7 +15,7 @@ export async function PostCard({ post }: { post: Post }) {
     ? await getFeaturedMediaById(post.featured_media)
     : null;
   const author = post.author ? await getAuthorById(post.author) : null;
-  const date = new Date(post.date).toLocaleDateString("en-US", {
+  const date = new Date(post.date).toLocaleDateString("id-ID", {
     month: "long",
     day: "numeric",
     year: "numeric",
@@ -47,18 +47,23 @@ export async function PostCard({ post }: { post: Post }) {
               No image available
             </div>
           )}
+          {category?.name && (
+            <span className="absolute top-2 left-2 bg-background/80 text-xs px-2 py-0.5 rounded-md">
+              {category.name}
+            </span>
+          )}
         </div>
         <div
           dangerouslySetInnerHTML={{
             __html: post.title?.rendered || "Untitled Post",
           }}
-          className="text-xl text-primary font-medium group-hover:underline decoration-muted-foreground underline-offset-4 decoration-dotted transition-all"
+          className="text-xl text-primary font-medium group-hover:underline decoration-muted-foreground underline-offset-4 decoration-dotted transition-all line-clamp-2"
         ></div>
         <div
-          className="text-sm"
+          className="text-sm line-clamp-3"
           dangerouslySetInnerHTML={{
             __html: post.excerpt?.rendered
-              ? post.excerpt.rendered.split(" ").slice(0, 12).join(" ").trim() +
+              ? post.excerpt.rendered.split(" ").slice(0, 20).join(" ").trim() +
                 "..."
               : "No excerpt available",
           }}

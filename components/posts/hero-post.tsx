@@ -38,7 +38,7 @@ export async function HeroPost({ post }: { post: Post }) {
             {category?.name} &bull; {date}
           </span>
           <h2
-            className="text-xl md:text-2xl font-semibold mt-1 leading-tight group-hover:underline"
+            className="text-xl md:text-2xl font-semibold mt-1 leading-tight group-hover:underline line-clamp-2"
             dangerouslySetInnerHTML={{ __html: post.title.rendered }}
           />
         </div>

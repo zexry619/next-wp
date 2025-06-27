@@ -25,26 +25,26 @@ export default async function Home() {
               <div className="space-y-2">
                 <h3 className="text-lg font-semibold">Terbaru</h3>
                 <ul className="space-y-2">
-                {sidePosts.map((post) => (
-                  <SidebarPost key={post.id} post={post} />
-                ))}
-              </ul>
+                  {sidePosts.map((post) => (
+                    <SidebarPost key={post.id} post={post} />
+                  ))}
+                </ul>
+              </div>
             </div>
-          </div>
-          <Prose>
-            <h2>
-              <Balancer>Berita Terbaru</Balancer>
-            </h2>
-          </Prose>
-          <div className="grid md:grid-cols-3 gap-4">
-            {gridPosts.map((post) => (
-              <PostCard key={post.id} post={post} />
-            ))}
-          </div>
-          <div className="flex justify-center mt-4">
-            <Button asChild>
-              <Link href="/posts">Lihat Semua</Link>
-            </Button>
+            <Prose>
+              <h2>
+                <Balancer>Berita Terbaru</Balancer>
+              </h2>
+            </Prose>
+            <div className="grid md:grid-cols-3 gap-4">
+              {gridPosts.map((post) => (
+                <PostCard key={post.id} post={post} />
+              ))}
+            </div>
+            <div className="flex justify-center mt-4">
+              <Button asChild>
+                <Link href="/posts">Lihat Semua</Link>
+              </Button>
             </div>
           </div>
         </Container>
