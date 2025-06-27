@@ -1,6 +1,5 @@
 import {
   getPostBySlug,
-  getFeaturedMediaById,
   getAuthorById,
   getCategoryById,
   getAllPostSlugs,
@@ -75,9 +74,6 @@ export default async function Page({
 }) {
   const { slug } = await params;
   const post = await getPostBySlug(slug);
-  const featuredMedia = post.featured_media
-    ? await getFeaturedMediaById(post.featured_media)
-    : null;
   const author = await getAuthorById(post.author);
   const date = new Date(post.date).toLocaleDateString("id-ID", {
     month: "long",
@@ -121,16 +117,6 @@ export default async function Page({
               {category.name}
             </Link>
           </div>
-          {featuredMedia?.source_url && (
-            <div className="h-96 my-12 md:h-[500px] overflow-hidden flex items-center justify-center border rounded-lg bg-accent/25">
-              {/* eslint-disable-next-line */}
-              <img
-                className="w-full h-full object-cover"
-                src={featuredMedia.source_url}
-                alt={post.title.rendered}
-              />
-            </div>
-          )}
         </Prose>
 
         <div className="md:grid md:grid-cols-[3fr_1fr] gap-8">
