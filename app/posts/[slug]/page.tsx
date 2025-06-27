@@ -10,6 +10,7 @@ import {
 
 import { Section, Container, Article, Prose } from "@/components/craft";
 import { PostCard } from "@/components/posts/post-card";
+import { SidebarPost } from "@/components/posts/sidebar-post";
 import { badgeVariants } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { siteConfig } from "@/site.config";
@@ -139,37 +140,19 @@ export default async function Page({
           <aside className="space-y-8 mt-8 md:mt-0">
             <div className="space-y-2">
               <h3 className="text-lg font-semibold">Related Posts</h3>
-              <ul className="list-disc pl-4 text-sm space-y-1">
+              <ul className="space-y-4">
                 {relatedPosts.map((p) => (
-                  <li key={p.id}>
-                    <Link href={`/posts/${p.slug}`} className="hover:underline">
-                      {/* eslint-disable-next-line react/no-danger */}
-                      <span
-                        dangerouslySetInnerHTML={{
-                          __html: p.title.rendered,
-                        }}
-                      />
-                    </Link>
-                  </li>
+                  <SidebarPost key={p.id} post={p} />
                 ))}
               </ul>
             </div>
             <div className="space-y-2">
               <h3 className="text-lg font-semibold">Recent Posts</h3>
-              <ul className="list-disc pl-4 text-sm space-y-1">
+              <ul className="space-y-4">
                 {recentPosts
                   .filter((p) => p.id !== post.id)
                   .map((p) => (
-                    <li key={p.id}>
-                      <Link href={`/posts/${p.slug}`} className="hover:underline">
-                        {/* eslint-disable-next-line react/no-danger */}
-                        <span
-                          dangerouslySetInnerHTML={{
-                            __html: p.title.rendered,
-                          }}
-                        />
-                      </Link>
-                    </li>
+                    <SidebarPost key={p.id} post={p} />
                   ))}
               </ul>
             </div>
