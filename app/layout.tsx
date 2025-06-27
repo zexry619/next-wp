@@ -5,12 +5,14 @@ import { Inter as FontSans } from "next/font/google";
 import { ThemeProvider } from "@/components/theme/theme-provider";
 import { ThemeToggle } from "@/components/theme/theme-toggle";
 import { MobileNav } from "@/components/nav/mobile-nav";
+import { CategoryDropdown } from "@/components/nav/category-dropdown";
 import { Analytics } from "@vercel/analytics/react";
 import { Button } from "@/components/ui/button";
 
 import { mainMenu, contentMenu } from "@/menu.config";
 import { siteConfig } from "@/site.config";
 import { cn } from "@/lib/utils";
+import { getAllCategories } from "@/lib/wordpress";
 
 import Balancer from "react-wrap-balancer";
 import Logo from "@/public/logo.svg";
@@ -59,7 +61,8 @@ export default function RootLayout({
   );
 }
 
-const Nav = ({ className, children, id }: NavProps) => {
+async function Nav({ className, children, id }: NavProps) {
+  const categories = await getAllCategories();
   return (
     <nav
       className={cn("sticky z-50 top-0 bg-background", "border-b", className)}
@@ -85,7 +88,7 @@ const Nav = ({ className, children, id }: NavProps) => {
         </Link>
         {children}
         <div className="flex items-center gap-2">
-          <div className="mx-2 hidden md:flex">
+          <div className="mx-2 hidden md:flex items-center gap-2">
             {Object.entries(mainMenu).map(([key, href]) => (
               <Button key={href} asChild variant="ghost" size="sm">
                 <Link href={href}>
@@ -93,16 +96,17 @@ const Nav = ({ className, children, id }: NavProps) => {
                 </Link>
               </Button>
             ))}
+            <CategoryDropdown />
           </div>
           <Button asChild className="hidden sm:flex">
             <Link href="https://github.com/9d8dev/next-wp">Get Started</Link>
           </Button>
-          <MobileNav />
+          <MobileNav categories={categories} />
         </div>
       </div>
     </nav>
   );
-};
+}
 
 const Footer = () => {
   return (

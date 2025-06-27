@@ -22,9 +22,10 @@ import {
 import { Separator } from "@/components/ui/separator";
 
 import { mainMenu, contentMenu } from "@/menu.config";
+import type { Category } from "@/lib/wordpress.d";
 import { siteConfig } from "@/site.config";
 
-export function MobileNav() {
+export function MobileNav({ categories }: { categories?: Category[] }) {
   const [open, setOpen] = React.useState(false);
 
   return (
@@ -67,6 +68,21 @@ export function MobileNav() {
                 {key.charAt(0).toUpperCase() + key.slice(1)}
               </MobileLink>
             ))}
+            {categories && categories.length > 0 && (
+              <>
+                <h3 className="text-small pt-6">Kategori</h3>
+                <Separator />
+                {categories.map((cat) => (
+                  <MobileLink
+                    key={cat.id}
+                    href={`/posts?category=${cat.id}`}
+                    onOpenChange={setOpen}
+                  >
+                    {cat.name}
+                  </MobileLink>
+                ))}
+              </>
+            )}
           </div>
         </ScrollArea>
       </SheetContent>
