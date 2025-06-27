@@ -79,7 +79,7 @@ export default async function Page({
     ? await getFeaturedMediaById(post.featured_media)
     : null;
   const author = await getAuthorById(post.author);
-  const date = new Date(post.date).toLocaleDateString("en-US", {
+  const date = new Date(post.date).toLocaleDateString("id-ID", {
     month: "long",
     day: "numeric",
     year: "numeric",
@@ -103,7 +103,7 @@ export default async function Page({
           </h1>
           <div className="flex justify-between items-center gap-4 text-sm mb-4">
             <h5>
-              Published {date} by{" "}
+              Dipublikasikan {date} oleh{" "}
               {author.name && (
                 <span>
                   <a href={`/posts/?author=${author.id}`}>{author.name}</a>{" "}
@@ -139,7 +139,7 @@ export default async function Page({
           </div>
           <aside className="space-y-8 mt-8 md:mt-0">
             <div className="space-y-2">
-              <h3 className="text-lg font-semibold">Related Posts</h3>
+              <h3 className="text-lg font-semibold">Artikel Terkait</h3>
               <ul className="space-y-4">
                 {relatedPosts.map((p) => (
                   <SidebarPost key={p.id} post={p} />
@@ -147,7 +147,7 @@ export default async function Page({
               </ul>
             </div>
             <div className="space-y-2">
-              <h3 className="text-lg font-semibold">Recent Posts</h3>
+              <h3 className="text-lg font-semibold">Artikel Terbaru</h3>
               <ul className="space-y-4">
                 {recentPosts
                   .filter((p) => p.id !== post.id)
