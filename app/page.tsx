@@ -5,6 +5,7 @@ import { PostCard } from "@/components/posts/post-card";
 import { HeroPost } from "@/components/posts/hero-post";
 import { SidebarPost } from "@/components/posts/sidebar-post";
 import { LatestTicker } from "@/components/posts/latest-ticker";
+import { PostSlider } from "@/components/posts/post-slider";
 import { getPostsPaginated } from "@/lib/wordpress";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
@@ -17,6 +18,11 @@ export default async function Home() {
   return (
     <>
       <LatestTicker />
+      <Section className="py-4">
+        <Container>
+          <PostSlider />
+        </Container>
+      </Section>
       <Section>
         <Container>
           <div className="space-y-8">
