@@ -19,26 +19,26 @@ export async function HeroPost({ post }: { post: Post }) {
 
   return (
     <Link href={`/posts/${post.slug}`} className="block group">
-      <div className="h-64 md:h-96 w-full overflow-hidden relative rounded-lg border bg-muted">
+      <div className="relative overflow-hidden rounded-lg border bg-muted aspect-video">
         {media?.source_url ? (
           <Image
             src={media.source_url}
             alt={post.title.rendered}
             fill
-            className="object-cover group-hover:scale-105 transition-transform"
+            className="object-cover transition-transform duration-700 group-hover:scale-110"
           />
         ) : (
           <div className="flex items-center justify-center w-full h-full text-muted-foreground">
             No image available
           </div>
         )}
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-black/40 to-black/70" />
-        <div className="absolute bottom-0 left-0 p-4 text-white">
+        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/40 to-transparent" />
+        <div className="absolute bottom-0 left-0 right-0 p-4 text-white">
           <span className="text-xs md:text-sm">
             {category?.name} &bull; {date}
           </span>
           <h2
-            className="text-xl md:text-2xl font-semibold mt-1 group-hover:underline"
+            className="text-xl md:text-2xl font-semibold mt-1 leading-tight group-hover:underline"
             dangerouslySetInnerHTML={{ __html: post.title.rendered }}
           />
         </div>
