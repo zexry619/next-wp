@@ -1,4 +1,4 @@
-import { getPageBySlug, getAllPages } from "@/lib/wordpress";
+import { getPageBySlug, getAllPages, WordPressAPIError } from "@/lib/wordpress";
 import { Section, Container, Prose } from "@/components/craft";
 import { siteConfig } from "@/site.config";
 
@@ -8,11 +8,19 @@ import type { Metadata } from "next";
 export const revalidate = 3600;
 
 export async function generateStaticParams() {
-  const pages = await getAllPages();
+  try {
+    const pages = await getAllPages();
 
-  return pages.map((page) => ({
-    slug: page.slug,
-  }));
+    return pages.map((page) => ({
+      slug: page.slug,
+    }));
+  } catch (error) {
+    if (error instanceof WordPressAPIError) {
+      console.warn("Failed to fetch page slugs", error);
+      return [];
+    }
+    throw error;
+  }
 }
 
 export async function generateMetadata({
@@ -21,11 +29,12 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
-  const page = await getPageBySlug(slug);
+  try {
+    const page = await getPageBySlug(slug);
 
-  if (!page) {
-    return {};
-  }
+    if (!page) {
+      return {};
+    }
 
   const ogUrl = new URL(`${siteConfig.site_domain}/api/og`);
   ogUrl.searchParams.append("title", page.title.rendered);
@@ -62,6 +71,13 @@ export async function generateMetadata({
       images: [ogUrl.toString()],
     },
   };
+  } catch (error) {
+    if (error instanceof WordPressAPIError) {
+      console.warn(`Failed to fetch metadata for page ${slug}`, error);
+      return {};
+    }
+    throw error;
+  }
 }
 
 export default async function Page({
