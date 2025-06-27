@@ -90,7 +90,7 @@ async function Nav({ className, children, id }: NavProps) {
         <div className="flex items-center gap-2">
           <div className="mx-2 hidden md:flex items-center gap-2">
             {Object.entries(mainMenu)
-              .filter(([key]) => key !== "blog")
+              .filter(([key]) => key !== "posts")
               .map(([key, href]) => (
                 <Button key={href} asChild variant="ghost" size="sm">
                   <Link href={href}>
@@ -101,7 +101,7 @@ async function Nav({ className, children, id }: NavProps) {
             <CategoryDropdown />
           </div>
           <Button asChild className="hidden sm:flex">
-            <Link href="/posts">Blog</Link>
+            <Link href="/posts">Posts</Link>
           </Button>
           <MobileNav categories={categories} />
         </div>

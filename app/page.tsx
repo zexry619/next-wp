@@ -5,6 +5,7 @@ import { PostCard } from "@/components/posts/post-card";
 import { HeroPost } from "@/components/posts/hero-post";
 import { getPostsPaginated } from "@/lib/wordpress";
 import Link from "next/link";
+import { Button } from "@/components/ui/button";
 
 export default async function Home() {
   const { data: posts } = await getPostsPaginated(1, 6);
@@ -24,10 +25,10 @@ export default async function Home() {
               <PostCard key={post.id} post={post} />
             ))}
           </div>
-          <div className="flex justify-end mt-4">
-            <Link href="/posts" className="underline text-sm">
-              Lihat Semua
-            </Link>
+          <div className="flex justify-center mt-4">
+            <Button asChild>
+              <Link href="/posts">Lihat Semua</Link>
+            </Button>
           </div>
         </div>
       </Container>
