@@ -8,7 +8,7 @@ type SiteConfig = {
 export const MAX_STATIC_SLUGS = 100;
 
 export const siteConfig: SiteConfig = {
-  site_name: "next-wp",
-  site_description: "Blog berita, tutorial, dan panduan berbasis WordPress",
-  site_domain: "https://next-wp.com",
+  site_name: "zekriansyah.com",
+  site_description: "zekriansyah.com - Radar Informasi Terupdate",
+  site_domain: "https://zekriansyah.com",
 };
