@@ -27,9 +27,9 @@ const font = FontSans({
 });
 
 export const metadata: Metadata = {
-  title: "WordPress & Next.js Starter by 9d8",
+  title: "zekriansyah.com - Radar Berita Dan Informasi Terkini",
   description:
-    "A starter template for Next.js with WordPress as a headless CMS.",
+    "Radar Nusantara menyajikan berita viral hari ini, gosip artis, update finansial, ekonomi, teknologi, dan informasi trending lainnya setiap saat. ",
   metadataBase: new URL(siteConfig.site_domain),
   alternates: {
     canonical: "/",
