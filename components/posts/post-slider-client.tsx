@@ -4,6 +4,7 @@ import { useKeenSlider } from 'keen-slider/react'
 import 'keen-slider/keen-slider.min.css'
 import Link from 'next/link'
 import Image from 'next/image'
+import { ChevronLeft, ChevronRight } from 'lucide-react'
 
 export interface SliderItem {
   id: number
@@ -49,14 +50,14 @@ export function PostSliderClient({ posts }: { posts: SliderItem[] }) {
         className="absolute left-1 top-1/2 -translate-y-1/2 flex items-center justify-center w-8 h-8 rounded-full border bg-background/90 hover:bg-accent transition-colors"
         onClick={() => instanceRef.current?.prev()}
       >
-        «
+        <ChevronLeft className="w-4 h-4" />
       </button>
       <button
         aria-label="Berikutnya"
         className="absolute right-1 top-1/2 -translate-y-1/2 flex items-center justify-center w-8 h-8 rounded-full border bg-background/90 hover:bg-accent transition-colors"
         onClick={() => instanceRef.current?.next()}
       >
-        »
+        <ChevronRight className="w-4 h-4" />
       </button>
     </div>
   )

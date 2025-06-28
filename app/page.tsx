@@ -4,7 +4,7 @@ import Balancer from "react-wrap-balancer";
 import { PostCard } from "@/components/posts/post-card";
 import { HeroPost } from "@/components/posts/hero-post";
 import { SidebarPost } from "@/components/posts/sidebar-post";
-import { RandomWeekPosts } from "@/components/posts/random-week-posts";
+import { PostSlider } from "@/components/posts/post-slider";
 import { getPostsPaginated } from "@/lib/wordpress";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
@@ -51,7 +51,7 @@ export default async function Home() {
       />
       <Section className="py-4">
         <Container>
-          <RandomWeekPosts />
+          <PostSlider />
         </Container>
       </Section>
       <Section>
