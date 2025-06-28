@@ -6,7 +6,6 @@ import { ThemeProvider } from "@/components/theme/theme-provider";
 import { ThemeToggle } from "@/components/theme/theme-toggle";
 import { MobileNav } from "@/components/nav/mobile-nav";
 import { CategoryDropdown } from "@/components/nav/category-dropdown";
-import { Analytics } from "@vercel/analytics/react";
 import { Button } from "@/components/ui/button";
 
 import { mainMenu, contentMenu } from "@/menu.config";
@@ -55,7 +54,6 @@ export default function RootLayout({
           {children}
           <Footer />
         </ThemeProvider>
-        <Analytics />
       </body>
     </html>
   );
