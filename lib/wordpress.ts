@@ -118,6 +118,8 @@ export async function getPostsPaginated(
     tag?: string;
     category?: string;
     search?: string;
+    after?: string;
+    before?: string;
   }
 ): Promise<WordPressResponse<Post[]>> {
   const query: Record<string, any> = {
@@ -144,6 +146,12 @@ export async function getPostsPaginated(
   if (filterParams?.category) {
     query.categories = filterParams.category;
     cacheTags.push(`posts-category-${filterParams.category}`);
+  }
+  if (filterParams?.after) {
+    query.after = filterParams.after;
+  }
+  if (filterParams?.before) {
+    query.before = filterParams.before;
   }
 
   // Add page-specific cache tag for granular invalidation
@@ -432,6 +440,13 @@ export async function getPostsByAuthorPaginated(
 export async function getRecentPosts(limit: number = 3): Promise<Post[]> {
   const { data } = await getPostsPaginated(1, limit);
   return data;
+}
+
+export async function getRandomWeeklyPosts(limit: number = 5): Promise<Post[]> {
+  const oneWeekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString();
+  const { data } = await getPostsPaginated(1, 100, { after: oneWeekAgo });
+  const shuffled = data.sort(() => Math.random() - 0.5);
+  return shuffled.slice(0, limit);
 }
 
 export async function getRelatedPosts(

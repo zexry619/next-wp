@@ -4,11 +4,33 @@ import Balancer from "react-wrap-balancer";
 import { PostCard } from "@/components/posts/post-card";
 import { HeroPost } from "@/components/posts/hero-post";
 import { SidebarPost } from "@/components/posts/sidebar-post";
-import { LatestTicker } from "@/components/posts/latest-ticker";
-import { PostSlider } from "@/components/posts/post-slider";
+import { RandomWeekPosts } from "@/components/posts/random-week-posts";
 import { getPostsPaginated } from "@/lib/wordpress";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import Script from "next/script";
+import { siteConfig } from "@/site.config";
+
+const WEBSITE_SCHEMA = {
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  url: siteConfig.site_domain,
+  name: siteConfig.site_name,
+  potentialAction: {
+    "@type": "SearchAction",
+    target: `${siteConfig.site_domain}/posts?search={search_term_string}`,
+    "query-input": "required name=search_term_string",
+  },
+};
+
+const ORGANIZATION_SCHEMA = {
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  name: siteConfig.site_name,
+  url: siteConfig.site_domain,
+  logo: `${siteConfig.site_domain}/logo.svg`,
+  sameAs: siteConfig.socialLinks,
+};
 
 export default async function Home() {
   const { data: posts } = await getPostsPaginated(1, 10);
@@ -17,10 +39,19 @@ export default async function Home() {
   const gridPosts = rest.slice(3);
   return (
     <>
-      <LatestTicker />
+      <Script
+        id="website-schema"
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(WEBSITE_SCHEMA) }}
+      />
+      <Script
+        id="organization-schema"
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(ORGANIZATION_SCHEMA) }}
+      />
       <Section className="py-4">
         <Container>
-          <PostSlider />
+          <RandomWeekPosts />
         </Container>
       </Section>
       <Section>
