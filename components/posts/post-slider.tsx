@@ -1,8 +1,8 @@
-import { getRecentPosts, getFeaturedMediaById } from '@/lib/wordpress'
+import { getRandomWeeklyPosts, getFeaturedMediaById } from '@/lib/wordpress'
 import { PostSliderClient, SliderItem } from './post-slider-client'
 
 export async function PostSlider() {
-  const posts = await getRecentPosts(8)
+  const posts = await getRandomWeeklyPosts(8)
   const items: SliderItem[] = await Promise.all(
     posts.map(async (post) => {
       const media = post.featured_media
