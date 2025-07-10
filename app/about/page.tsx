@@ -10,8 +10,7 @@ type Props = {
 
 // Generate metadata for the page
 export async function generateMetadata(
-  { params, searchParams }: Props,
-  parent: ResolvingMetadata
+  { params, searchParams }: Props
 ): Promise<Metadata> {
   const page = await getPageBySlug("about").catch(() => notFound());
 
@@ -21,8 +20,6 @@ export async function generateMetadata(
     };
   }
 
-  const previousImages = (await parent).openGraph?.images || [];
-
   return {
     title: page.title.rendered,
     description: page.excerpt.rendered.replace(/<[^>]+>/g, ""), // Strip HTML tags from excerpt
@@ -30,13 +27,11 @@ export async function generateMetadata(
       title: page.title.rendered,
       description: page.excerpt.rendered.replace(/<[^>]+>/g, ""),
       url: `/about`,
-      images: previousImages,
     },
     twitter: {
       card: "summary_large_image",
       title: page.title.rendered,
       description: page.excerpt.rendered.replace(/<[^>]+>/g, ""),
-      images: previousImages,
     },
     alternates: {
       canonical: `/about`,
