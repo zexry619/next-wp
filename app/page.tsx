@@ -1,3 +1,14 @@
+import { siteConfig } from "@/site.config";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: `${siteConfig.site_name} - ${siteConfig.site_description}`,
+  description: `Website ${siteConfig.site_name} - ${siteConfig.site_description}`,
+  alternates: {
+    canonical: "/",
+  },
+};
+
 // Craft Imports
 import { Section, Container, Prose } from "@/components/craft";
 import Balancer from "react-wrap-balancer";
@@ -9,7 +20,6 @@ import { getPostsPaginated } from "@/lib/wordpress";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import Script from "next/script";
-import { siteConfig } from "@/site.config";
 
 const WEBSITE_SCHEMA = {
   "@context": "https://schema.org",
@@ -69,9 +79,9 @@ export default async function Home() {
               </div>
             </div>
             <Prose>
-              <h2>
+              <h1>
                 <Balancer>Berita Terbaru</Balancer>
-              </h2>
+              </h1>
             </Prose>
             <div className="grid md:grid-cols-3 gap-4">
               {gridPosts.map((post) => (

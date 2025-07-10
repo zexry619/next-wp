@@ -4,6 +4,8 @@ import { Metadata } from "next";
 import BackButton from "@/components/back";
 import Link from "next/link";
 
+export const runtime = 'edge';
+
 export const metadata: Metadata = {
   title: "All Categories",
   description: "Browse all categories of our blog posts",

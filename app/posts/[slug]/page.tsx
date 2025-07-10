@@ -5,6 +5,7 @@ import {
   getAllPostSlugs,
   getRecentPosts,
   getRelatedPosts,
+  getFeaturedMediaById,
   WordPressAPIError,
 } from "@/lib/wordpress";
 
@@ -16,22 +17,12 @@ import { siteConfig } from "@/site.config";
 
 import Link from "next/link";
 import Balancer from "react-wrap-balancer";
+import Script from "next/script";
 
 import type { Metadata } from "next";
 
+export const runtime = 'edge';
 export const dynamicParams = true;
-
-export async function generateStaticParams() {
-  try {
-    return await getAllPostSlugs();
-  } catch (error) {
-    if (error instanceof WordPressAPIError) {
-      console.warn("Failed to fetch post slugs", error);
-      return [];
-    }
-    throw error;
-  }
-}
 
 export async function generateMetadata({
   params,
@@ -112,72 +103,104 @@ export default async function Page({
       day: "numeric",
       year: "numeric",
     });
-    const category = await getCategoryById(post.categories[0]);
-    const [recentPosts, relatedPosts] = await Promise.all([
+    const [category, recentPosts, relatedPosts, featuredMedia] = await Promise.all([
+      getCategoryById(post.categories[0]),
       getRecentPosts(5),
-      getRelatedPosts(post.id, category.id, 5),
+      getRelatedPosts(post.id, post.categories[0], 5),
+      post.featured_media ? getFeaturedMediaById(post.featured_media) : Promise.resolve(null),
     ]);
 
+    const imageUrl = featuredMedia?.source_url || `${siteConfig.site_domain}/opengraph-image.jpeg`;
+
+    const articleSchema = {
+      "@context": "https://schema.org",
+      "@type": "Article",
+      "headline": post.title.rendered,
+      "image": imageUrl,
+      "author": {
+        "@type": "Person",
+        "name": author.name,
+        "url": `${siteConfig.site_domain}/posts/?author=${author.id}`
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": siteConfig.site_name,
+        "logo": {
+          "@type": "ImageObject",
+          "url": `${siteConfig.site_domain}/logo.svg`
+        }
+      },
+      "datePublished": post.date,
+      "dateModified": post.modified
+    };
+
     return (
-      <Section>
-        <Container>
-          <Prose>
-            <h1>
-              <Balancer>
-                <span
-                  dangerouslySetInnerHTML={{ __html: post.title.rendered }}
-                ></span>
-              </Balancer>
-            </h1>
-            <div className="flex justify-between items-center gap-4 text-sm mb-4">
-              <h5>
-                Dipublikasikan {date} oleh{" "}
-                {author.name && (
-                  <span>
-                    <a href={`/posts/?author=${author.id}`}>{author.name}</a>{" "}
-                  </span>
-                )}
-              </h5>
+      <>
+        <Script
+          id="article-schema"
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }}
+        />
+        <Section>
+          <Container>
+            <Prose>
+              <h1>
+                <Balancer>
+                  <span
+                    dangerouslySetInnerHTML={{ __html: post.title.rendered }}
+                  ></span>
+                </Balancer>
+              </h1>
+              <div className="flex justify-between items-center gap-4 text-sm mb-4">
+                <h5>
+                  Dipublikasikan {date} oleh{" "}
+                  {author.name && (
+                    <span>
+                      <a href={`/posts/?author=${author.id}`}>{author.name}</a>{" "}
+                    </span>
+                  )}
+                </h5>
 
-              <Link
-                href={`/posts/?category=${category.id}`}
-                className={cn(
-                  badgeVariants({ variant: "outline" }),
-                  "!no-underline"
-                )}
-              >
-                {category.name}
-              </Link>
-            </div>
-          </Prose>
-
-          <div className="md:grid md:grid-cols-[3fr_1fr] gap-8">
-            <div>
-              <Article dangerouslySetInnerHTML={{ __html: post.content.rendered }} />
-            </div>
-            <aside className="space-y-8 mt-8 md:mt-0">
-              <div className="space-y-2">
-                <h3 className="text-lg font-semibold">Artikel Terkait</h3>
-                <ul className="space-y-4">
-                  {relatedPosts.map((p) => (
-                    <SidebarPost key={p.id} post={p} />
-                  ))}
-                </ul>
+                <Link
+                  href={`/posts/?category=${category.id}`}
+                  className={cn(
+                    badgeVariants({ variant: "outline" }),
+                    "!no-underline"
+                  )}
+                >
+                  {category.name}
+                </Link>
               </div>
-              <div className="space-y-2">
-                <h3 className="text-lg font-semibold">Artikel Terbaru</h3>
-                <ul className="space-y-4">
-                  {recentPosts
-                    .filter((p) => p.id !== post.id)
-                    .map((p) => (
+            </Prose>
+
+            <div className="md:grid md:grid-cols-[3fr_1fr] gap-8">
+              <div>
+                <Article dangerouslySetInnerHTML={{ __html: post.content.rendered }} />
+              </div>
+              <aside className="space-y-8 mt-8 md:mt-0">
+                <div className="space-y-2">
+                  <h3 className="text-lg font-semibold">Artikel Terkait</h3>
+                  <ul className="space-y-4">
+                    {relatedPosts.map((p) => (
                       <SidebarPost key={p.id} post={p} />
                     ))}
-                </ul>
-              </div>
-            </aside>
-          </div>
-        </Container>
-      </Section>
+                  </ul>
+                </div>
+                <div className="space-y-2">
+                  <h3 className="text-lg font-semibold">Artikel Terbaru</h3>
+                  <ul className="space-y-4">
+                    {recentPosts
+                      .filter((p) => p.id !== post.id)
+                      .map((p) => (
+                        <SidebarPost key={p.id} post={p} />
+                      ))}
+                  </ul>
+                </div>
+              </aside>
+            </div>
+          </Container>
+        </Section>
+      </>
     );
   } catch (error) {
     if (error instanceof WordPressAPIError) {

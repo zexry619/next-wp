@@ -3,14 +3,7 @@
 // Types are imported from `wp.d.ts`
 
 import querystring from "query-string";
-import type {
-  Post,
-  Category,
-  Tag,
-  Page,
-  Author,
-  FeaturedMedia,
-} from "./wordpress.d";
+import type { Post, Category, Tag, Page, Author, FeaturedMedia } from "./wordpress.d";
 import { MAX_STATIC_SLUGS } from "@/site.config";
 
 const baseUrl = process.env.WORDPRESS_URL;
@@ -458,4 +451,4 @@ export async function getRelatedPosts(
   return data.filter((p) => p.id !== postId).slice(0, limit);
 }
 
-export { WordPressAPIError };
+export { WordPressAPIError, Category, Post, Author, Tag, Page, FeaturedMedia };

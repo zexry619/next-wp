@@ -22,12 +22,71 @@ import { PostCard } from "@/components/posts/post-card";
 import { FilterPosts } from "@/components/posts/filter";
 import { SearchInput } from "@/components/posts/search-input";
 
+import { siteConfig } from "@/site.config";
 import type { Metadata } from "next";
 
-export const metadata: Metadata = {
-  title: "Blog Posts",
-  description: "Browse all our blog posts",
-};
+export const runtime = "edge";
+
+export async function generateMetadata({
+  searchParams,
+}: {
+  searchParams: Promise<{
+    author?: string;
+    tag?: string;
+    category?: string;
+    page?: string;
+    search?: string;
+  }>;
+}): Promise<Metadata> {
+  const params = await searchParams;
+  const { author, tag, category, search } = params;
+
+  let title = "Semua Postingan";
+  let description = `Lihat semua postingan di ${siteConfig.site_name}`;
+  let canonical = "/posts";
+
+  const urlSearchParams = new URLSearchParams();
+
+  if (category) {
+    title = `Postingan dalam Kategori ${category}`;
+    description = `Lihat semua postingan dalam kategori ${category}`;
+    urlSearchParams.set("category", category as string);
+  } else if (tag) {
+    title = `Postingan dengan Tag ${tag}`;
+    description = `Lihat semua postingan dengan tag ${tag}`;
+    urlSearchParams.set("tag", tag as string);
+  } else if (author) {
+    title = `Postingan oleh ${author}`;
+    description = `Lihat semua postingan oleh ${author}`;
+    urlSearchParams.set("author", author as string);
+  } else if (search) {
+    title = `Hasil Pencarian untuk "${search}"`;
+    description = `Menampilkan hasil pencarian untuk "${search}"`;
+    urlSearchParams.set("search", search as string);
+  }
+
+  const queryString = urlSearchParams.toString();
+  if (queryString) {
+    canonical = `/posts?${queryString}`;
+  }
+
+  return {
+    title,
+    description,
+    alternates: {
+      canonical: canonical,
+    },
+    openGraph: {
+      title,
+      description,
+      url: canonical,
+    },
+    twitter: {
+      title,
+      description,
+    },
+  };
+}
 
 export const dynamic = "auto";
 export const revalidate = 600;
@@ -47,7 +106,7 @@ export default async function Page({
   const { author, tag, category, page: pageParam, search } = params;
 
   // Handle pagination
-  const page = pageParam ? parseInt(pageParam, 10) : 1;
+  const page = pageParam ? parseInt(Array.isArray(pageParam) ? pageParam[0] : pageParam, 10) : 1;
   const postsPerPage = 9;
 
   // Fetch data based on search parameters using efficient pagination

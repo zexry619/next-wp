@@ -5,10 +5,13 @@
   "scripts": {
     "dev": "next dev --turbo",
     "build": "next build",
+    "build:cf": "npx @cloudflare/next-on-pages",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "pages:deploy": "pnpm run build:cf && wrangler pages deploy .vercel/output/static"
   },
   "dependencies": {
+    "@cloudflare/next-on-pages": "^1.13.12",
     "@hookform/resolvers": "^3.10.0",
     "@radix-ui/react-dialog": "^1.1.14",
     "@radix-ui/react-dropdown-menu": "^2.1.15",
@@ -45,6 +48,7 @@
     "eslint-config-next": "^15.3.4",
     "postcss": "^8.5.6",
     "tailwindcss": "^3.4.17",
-    "typescript": "^5.8.3"
+    "typescript": "^5.8.3",
+    "wrangler": "^4.23.0"
   }
 }

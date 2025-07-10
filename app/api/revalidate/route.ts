@@ -1,6 +1,7 @@
 import { revalidatePath, revalidateTag } from "next/cache";
 import { NextRequest, NextResponse } from "next/server";
 
+export const runtime = 'edge';
 export const maxDuration = 30;
 
 /**

@@ -4,6 +4,8 @@ import { Metadata } from "next";
 import BackButton from "@/components/back";
 import Link from "next/link";
 
+export const runtime = 'edge';
+
 export const metadata: Metadata = {
   title: "All Authors",
   description: "Browse all authors of our blog posts",

@@ -19,6 +19,7 @@ import Image from "next/image";
 import Link from "next/link";
 
 import type { Metadata } from "next";
+import type { Category } from "@/lib/wordpress";
 
 const font = FontSans({
   subsets: ["latin"],
@@ -26,12 +27,46 @@ const font = FontSans({
 });
 
 export const metadata: Metadata = {
-  title: "zekriansyah.com - Radar Berita Dan Informasi Terkini",
-  description:
-    "Radar Nusantara menyajikan berita viral hari ini, gosip artis, update finansial, ekonomi, teknologi, dan informasi trending lainnya setiap saat. ",
+  title: {
+    default: siteConfig.site_name,
+    template: `%s - ${siteConfig.site_name}`,
+  },
+  description: siteConfig.site_description,
   metadataBase: new URL(siteConfig.site_domain),
+  openGraph: {
+    title: siteConfig.site_name,
+    description: siteConfig.site_description,
+    url: "./",
+    siteName: siteConfig.site_name,
+    images: [
+      {
+        url: "/opengraph-image.jpeg",
+        width: 1200,
+        height: 630,
+      },
+    ],
+    locale: "id_ID",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: siteConfig.site_name,
+    description: siteConfig.site_description,
+    images: [`${siteConfig.site_domain}/twitter-image.jpeg`],
+  },
   alternates: {
-    canonical: "/",
+    canonical: "./",
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
   },
 };
 
@@ -41,7 +76,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="id" suppressHydrationWarning>
       <head />
       <body className={cn("min-h-screen font-sans antialiased", font.variable)}>
         <ThemeProvider
@@ -60,7 +95,12 @@ export default function RootLayout({
 }
 
 async function Nav({ className, children, id }: NavProps) {
-  const categories = await getAllCategories();
+  let categories: Category[] = [];
+  try {
+    categories = await getAllCategories();
+  } catch (error) {
+    console.error("Failed to fetch categories in Nav component:", error);
+  }
   return (
     <nav
       className={cn("sticky z-50 top-0 bg-background", "border-b", className)}
