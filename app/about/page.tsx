@@ -1,17 +1,13 @@
 import { getPageBySlug } from "@/lib/wordpress";
 import { Container, Section } from "@/components/craft";
 import { notFound } from "next/navigation";
-import type { Metadata, ResolvingMetadata } from "next";
+import type { Metadata } from "next";
 
-type Props = {
-  params: { slug: string };
-  searchParams: { [key: string]: string | string[] | undefined };
-};
+// Props are inferred by Next.js
+// No need to define them manually
 
 // Generate metadata for the page
-export async function generateMetadata(
-  { params, searchParams }: Props
-): Promise<Metadata> {
+export async function generateMetadata(): Promise<Metadata> {
   const page = await getPageBySlug("about").catch(() => notFound());
 
   if (!page) {
@@ -20,18 +16,20 @@ export async function generateMetadata(
     };
   }
 
+  const description = page.excerpt.rendered.replace(/<[^>]+>/g, "");
+
   return {
     title: page.title.rendered,
-    description: page.excerpt.rendered.replace(/<[^>]+>/g, ""), // Strip HTML tags from excerpt
+    description: description,
     openGraph: {
       title: page.title.rendered,
-      description: page.excerpt.rendered.replace(/<[^>]+>/g, ""),
+      description: description,
       url: `/about`,
     },
     twitter: {
       card: "summary_large_image",
       title: page.title.rendered,
-      description: page.excerpt.rendered.replace(/<[^>]+>/g, ""),
+      description: description,
     },
     alternates: {
       canonical: `/about`,
