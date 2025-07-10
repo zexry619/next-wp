@@ -10,7 +10,8 @@ export const MAX_STATIC_SLUGS = 100;
 
 export const siteConfig: SiteConfig = {
   site_name: "zekriansyah.com",
-  site_description: "zekriansyah.com - Radar Informasi Terupdate",
+  site_description:
+    "Menyajikan berita dan informasi terkini seputar politik, hiburan, olahraga, dan sosial. Sumber terpercaya untuk wawasan mendalam dan update setiap hari.",
   site_domain: "https://zekriansyah.com",
   socialLinks: [
     "https://facebook.com/zekriansyah",

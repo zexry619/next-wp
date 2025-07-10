@@ -20,6 +20,9 @@ import Link from "next/link";
 
 import type { Metadata } from "next";
 import type { Category } from "@/lib/wordpress";
+import { Analytics } from "@vercel/analytics/next";
+import { SpeedInsights } from "@vercel/speed-insights/next";
+import Script from "next/script";
 
 const font = FontSans({
   subsets: ["latin"],
@@ -77,7 +80,14 @@ export default function RootLayout({
 }) {
   return (
     <html lang="id" suppressHydrationWarning>
-      <head />
+      <head>
+        <Script
+          async
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6274295126513505"
+          crossOrigin="anonymous"
+          strategy="afterInteractive"
+        />
+      </head>
       <body className={cn("min-h-screen font-sans antialiased", font.variable)}>
         <ThemeProvider
           attribute="class"
@@ -88,6 +98,8 @@ export default function RootLayout({
           <Nav />
           {children}
           <Footer />
+          <Analytics />
+          <SpeedInsights />
         </ThemeProvider>
       </body>
     </html>
