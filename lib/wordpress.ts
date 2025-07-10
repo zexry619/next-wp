@@ -30,6 +30,47 @@ export interface WordPressResponse<T> {
   headers: WordPressPaginationHeaders;
 }
 
+// The core fetcher with retry logic
+async function fetcher(url: string, options: RequestInit, retries = 5, backoff = 500): Promise<Response> {
+  for (let i = 0; i < retries; i++) {
+    try {
+      const response = await fetch(url, options);
+      if (response.ok) {
+        return response;
+      }
+
+      // For client-side errors (4xx), don't retry
+      if (response.status >= 400 && response.status < 500) {
+        throw new WordPressAPIError(
+          `WordPress API request failed with client error: ${response.statusText}`,
+          response.status,
+          url
+        );
+      }
+
+      // For server-side errors (5xx), we will retry
+      console.log(`Request to ${url} failed with status ${response.status}. Retrying (${i + 1}/${retries})...`);
+
+    } catch (error) {
+      // This catches network errors and errors thrown from above
+      if (error instanceof WordPressAPIError) {
+        throw error; // Don't retry client errors
+      }
+      console.error(`An error occurred during fetch: ${error instanceof Error ? error.message : String(error)}. Retrying (${i + 1}/${retries})...`);
+    }
+    
+    // Wait before the next retry using exponential backoff
+    await new Promise(resolve => setTimeout(resolve, backoff * Math.pow(2, i)));
+  }
+
+  throw new WordPressAPIError(
+    `WordPress API request failed after ${retries} retries.`,
+    0, // Status is unknown if all retries failed due to network errors
+    url
+  );
+}
+
+
 // Keep original function for backward compatibility
 async function wordpressFetch<T>(
   path: string,
@@ -41,7 +82,7 @@ async function wordpressFetch<T>(
   const userAgent =
     "Mozilla/5.0 (iPad; CPU OS 8_4_1 like Mac OS X) AppleWebKit/600.1.4 (KHTML, like Gecko) Version/8.0 Mobile/12H321 Safari/600.1.4";
 
-  const response = await fetch(url, {
+  const response = await fetcher(url, {
     headers: {
       "User-Agent": userAgent,
     },
@@ -73,7 +114,7 @@ async function wordpressFetchWithPagination<T>(
   const userAgent =
     "Mozilla/5.0 (iPad; CPU OS 8_4_1 like Mac OS X) AppleWebKit/600.1.4 (KHTML, like Gecko) Version/8.0 Mobile/12H321 Safari/600.1.4";
 
-  const response = await fetch(url, {
+  const response = await fetcher(url, {
     headers: {
       "User-Agent": userAgent,
     },
@@ -156,7 +197,7 @@ export async function getPostsPaginated(
   const userAgent =
     "Mozilla/5.0 (iPad; CPU OS 8_4_1 like Mac OS X) AppleWebKit/600.1.4 (KHTML, like Gecko) Version/8.0 Mobile/12H321 Safari/600.1.4";
 
-  const response = await fetch(url, {
+  const response = await fetcher(url, {
     headers: {
       "User-Agent": userAgent,
     },
